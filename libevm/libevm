@@ -30,6 +30,36 @@ _libevm_requirements() {
     'key-gen'
 }
 
+_contract_abi_get() {
+  local \
+    _deployments="${1}" \
+    _network="${2}" \
+    _contract="${3}" \
+    _version="${4}"
+  echo \
+    "${_deployments}/${_contract}/${_network}/${_version}/${_contract}.abi.json"
+}
+
+_contract_bytecode_get() {
+  local \
+    _deployments="${1}" \
+    _network="${2}" \
+    _contract="${3}" \
+    _version="${4}"
+  echo \
+    "${_deployments}/${_contract}/${_network}/${_version}/${_contract}.bin"
+}
+
+_contract_compiler_output_get() {
+  local \
+    _deployments="${1}" \
+    _network="${2}" \
+    _contract="${3}" \
+    _version="${4}"
+  echo \
+    "${_deployments}/${_contract}/${_network}/${_version}/${_contract}.json"
+}
+
 _wallet_path_get() {
   local \
     _app="${1}" \
@@ -310,4 +340,26 @@ _contract_address_auto_detect() {
     "${_contract_short_name}" \
     "address" \
     "${_address}"
+}
+
+_display_networks() {
+  local \
+    _networks=() \
+    _network \
+    _network_name
+  _networks=(
+      "$@"
+    )
+  for _network \
+    in "${_networks[@]}"; do
+    _network_name="$( \
+      evm-chains-info \
+        -i \
+          "id" \
+        -o \
+          "name" \
+        "${_network}")"
+  echo \
+    "    '${_network_name}' (${_network})"
+  done
 }
