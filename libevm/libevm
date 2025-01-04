@@ -1,0 +1,292 @@
+#!/usr/bin/env bash
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+_bin="$( \
+  dirname \
+    "$( \
+      command \
+        -v \
+	  "env")")"
+_lib="${_bin}/../lib"
+source \
+  "${_lib}/libcrash-bash/crash-bash"
+
+_wallet_path_get() {
+  local \
+    _app="${1}" \
+    _wallet_name="${2}" \
+    _path
+  if [[ "${_app}" == "" ]]; then
+    _app="evm-wallet"
+  fi
+  if [[ "${_wallet_name}" == "" ]]; then
+    _wallet_name="default"
+  fi
+  _path="${HOME}/.config/${_app}/${_wallet_name}.dat"
+  echo \
+    "${_path}"
+}
+
+_secret_get() {
+  local \
+    _secret="${1}" \
+    _app="${2}" \
+    _wallet_name="${3}" \
+    _path
+  if [[ "${_wallet_name}" == "" ]]; then
+    _wallet_name="default"
+  fi
+  _path="${HOME}/.config/${_app}/${_wallet_name}-${_secret}.txt"
+  echo \
+    "${_path}"
+}
+
+_api_key_auto_detect() {
+  local \
+    _chain="${1}" \
+    _chain_name \
+    _key \
+    _msg=()
+  _key="$( \
+    evm-chains-explorers \
+      -c \
+        "${_chain}" \
+      -s \
+        'kirsh' \
+      get \
+        keys)"
+  _chain_name="$( \
+    evm-chains-info \
+      -o \
+        "name" \
+      "${_chain}")"
+  if [[ ! -e "${_key}" ]]; then
+    _msg=(
+      "Found no provider services"
+      "keys for chain '${_chain_name}'."
+      "Check available service"
+      "providers with \"evm-chains-info"
+      "-o explorers '${_chain}'\""
+      "and add the relative api key in"
+      "'<user_home>/.config/evm-chains-explorers/<service>/default.txt'"
+    )
+    _msg_info \
+      "${_msg[*]}"
+  fi
+  _set_override \
+    "api" \
+    "key" \
+    "${_key}"
+}
+
+_secret_auto_detect() {
+  local \
+    _secret="${1}" \
+    _secret_type="${2}" \
+    _app="${3}" \
+    _wallet_name="${4}" \
+    _dir \
+    _key_gen_opts=() \
+    _msg=()
+  _path="$( \
+    _secret_get \
+      "${_secret}" \
+      "${_app}" \
+      "${_wallet_name}")"
+  _dir="$( \
+    dirname \
+      "${_path}")"
+  if [[ ! -e "${_path}" ]]; then
+    _key_gen_opts+=(
+      -t
+        "${_secret_type}"
+    )
+    _msg=(
+      "generating ${_secret} '${_path}'"
+    )
+    if [[ "${quiet}" == "n" ]]; then
+      _msg_info \
+        "${_msg[*]}"
+    fi
+    mkdir \
+      -p \
+      "${_dir}"
+    chmod \
+      700 \
+      "${_dir}"
+    chmod \
+      700 \
+      "${_dir}"
+    key-gen \
+      "${_key_gen_opts[@]}" \
+      "${_path}"
+    chmod \
+      400 \
+      "${_path}"
+    _msg=(
+      "${_secret} '${_path}' successfully generated"
+    )
+    if [[ "${quiet}" == "n" ]]; then
+      _msg_info \
+        "${_msg[*]}"
+    fi
+  fi
+  _set_override \
+    "wallet" \
+    "${_secret}" \
+    "${_path}"
+}
+
+_deployments_dir_auto_detect() {
+  local \
+    _app="${1}" \
+    _user_level="${2}" \
+    _evm_contract_deployments_dir_opts=() \
+    _deployments_dir \
+    _system_deployments
+  if [[ "${_user_level}" == "y" ]]; then
+    _evm_contract_deployments_dir_opts+=(
+      -u
+    )
+  fi
+  _deployments_dir="$( \
+    evm-contract-deployments-dir \
+      "${_evm_contract_deployments_dir_opts[@]}" \
+      "${_app}")"
+  if [[ ! -d "${_deployments_dir}" ]]; then
+    _system_deployments="$( \
+     evm-contract-deployments-dir \
+       "${_app}")"
+    _msg=(
+      "user deployments directory"
+      "'${_deployments_dir}' does"
+      "not exists, importing system deployments"
+      "directory '${_system_deployments}'"
+    )
+    _msg_info \
+      "${_msg[*]}"
+    mkdir \
+      -p \
+      "${_deployments_dir}"
+    chmod \
+      700 \
+      "${_deployments_dir}"
+    cp \
+     -r \
+     "${_system_deployments}/"* \
+     "${_deployments_dir}"
+  fi
+  _set_override \
+    "deployments" \
+    "dir" \
+    "${_deployments_dir}"
+}
+
+_network_auto_detect() {
+  local \
+    _contract="${1}" \
+    _deployments="${2}" \
+    _user="${3}" \
+    _contract_deployment \
+    _user \
+    _msg=()
+  _contract_deployment="${_deployments}/${_contract}"
+  if [[ "${_user}" == "y" ]]; then
+    _msg=(
+     "User deployments enabled, looking"
+     "for cheapest network deployments at" 
+     "path '${_contract_deployment}'"
+   )
+   _msg_info \
+     "${_msg[*]}"
+  fi
+  _network="$( \
+    evm-contract-deployment-networks \
+      -C \
+      "${_contract_deployment}")"
+  if [[ "${_user}" == "y" ]]; then
+    _msg=(
+      "Found network '${_network}'"
+    )
+    _msg_info \
+      "${_msg[*]}"
+  fi
+  _set_override \
+    "target" \
+    "network" \
+    "${_network}"
+}
+
+_contract_version_auto_detect() {
+  local \
+    _deployments="${1}" \
+    _contract="${2}" \
+    _contract_short_name="${3}" \
+    _network="${4}" \
+    _config \
+    _version
+  _config="${_deployments}/${_contract}/${_network}/config.sh"
+  _version="$( \
+    evm-contract-deployment-versions \
+      -H \
+      "${_config}")"
+  _set_override \
+    "${_contract_short_name}" \
+    "version" \
+    "${_version}"
+}
+
+_contract_address_auto_detect() {
+  local \
+    _app="${1}" \
+    _contract="${2}" \
+    _contract_short_name="${3}" \
+    _network="${4}" \
+    _version="${5}" \
+    _user="${6}" \
+    _deployments="${7}" \
+    _address \
+    _evm_contract_deployment_address_opts=() \
+    _msg=()
+  _evm_contract_deployment_address_opts+=(
+    -n
+      "${_network}"
+  )
+  if [[ "${_version}" != "" ]]; then
+    _evm_contract_deployment_address_opts+=(
+      -V
+        "${_version}"
+    )
+  fi
+  if [[ "${_user}" == "n" ]]; then
+    _evm_contract_deployment_address_opts+=(
+      -a
+        "${_app}"
+    )
+  elif [[ "${_user}" == "y" ]]; then
+    _evm_contract_deployment_address_opts+=(
+      -u
+      -d
+        "${_deployments}" 
+    )
+  fi
+  _address="$( \
+    evm-contract-deployment-address \
+      "${_evm_contract_deployment_address_opts[@]}" \
+      "${_contract}")"
+  if [[ "${_address}" == "" ]]; then
+    _msg=(
+      "error getting '${_contract}' version"
+      "${_version} deployment address"
+      "for network '${_network}'"
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      1
+  fi
+  _set_override \
+    "${_contract_short_name}" \
+    "address" \
+    "${_address}"
+}
