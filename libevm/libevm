@@ -12,6 +12,24 @@ _lib="${_bin}/../lib"
 source \
   "${_lib}/libcrash-bash/crash-bash"
 
+_libevm_requirements() {
+  _check_cmd \
+    'evm-chains-explorers'
+  _check_cmd \
+    'evm-chains-info'
+  _check_cmd \
+    'evm-contract-deployment-address' \
+    'evm-contracts-tools'
+  _check_cmd \
+    'evm-contract-deployment-versions' \
+    'evm-contracts-tools'
+  _check_cmd \
+    'evm-contract-deployments-dir' \
+    'evm-contracts-tools'
+  _check_cmd \
+    'key-gen'
+}
+
 _wallet_path_get() {
   local \
     _app="${1}" \
@@ -34,6 +52,9 @@ _secret_get() {
     _app="${2}" \
     _wallet_name="${3}" \
     _path
+  if [[ "${_app}" == "" ]]; then
+    _app="evm-wallet"
+  fi
   if [[ "${_wallet_name}" == "" ]]; then
     _wallet_name="default"
   fi

@@ -16,8 +16,8 @@ source \
   "${_lib}/libevm/libevm"
 ```
 
-The library depends on `crash-bash` and it is supposed to be used with
-`evm-wallet` and `evm-contracts-tools`, `evm-contracts-abi-get` and `solidity-compiler`, together with which it makes up the `evm-toolchain`.
+The library depends on `crash-bash`, `evm-chains-info`, `evm-chains-explorers`, `evm-contract-tools` and it is supposed to be used with
+`evm-wallet` and `solidity-compiler`, together with which it makes up the `evm-toolchain`.
 
 EVM stands for *Ethereum Virtual Machine*.
 
