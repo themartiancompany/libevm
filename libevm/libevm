@@ -342,6 +342,31 @@ _contract_address_auto_detect() {
     "${_address}"
 }
 
+_contract_setup_auto_detect() {
+  local \
+    _app="${1}" \
+    _contract="${2}" \
+    _contract_short_name="${3}" \
+    _network="${4}" \
+    _user="${5}" \
+    _deployments="${6}"
+  _contract_version_auto_detect \
+    "${_deployments}" \
+    "${_contract}" \
+    "${_contract_short_name}" \
+    "${_network}"
+  _contract_address_auto_detect \
+    "${_app}" \
+    "${_contract}" \
+    "${_contract_short_name}" \
+    "${_network}" \
+    "$(_get \
+         "${_contract_short_name}" \
+         "version")" \
+    "${_user}" \
+    "${_deployments}"
+}
+
 _display_networks() {
   local \
     _networks=() \
