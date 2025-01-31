@@ -417,15 +417,15 @@ _contract_artifacts_auto_detect() {
       "${_target_network}" \
       "${_contract}" \
       "${_contract_version}")"
-  _set \
+  _set_override \
     "${_contract_short_name}" \
     "abi" \
     "${_abi}"
-  _set \
+  _set_override \
     "${_contract_short_name}" \
     "bytecode" \
     "${_bytecode}"
-  _set \
+  _set_override \
     "${_contract_short_name}" \
     "compiler_output" \
     "${_compiler_output}"
