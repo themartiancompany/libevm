@@ -388,3 +388,45 @@ _display_networks() {
     "    '${_network_name}' (${_network})"
   done
 }
+
+_contract_artifacts_auto_detect() {
+  local \
+    _deployments_dir="${1}" \
+    _target_network="${2}" \
+    _contract="${3}" \
+    _contract_short_name="${3}" \
+    _contract_version="${4}" \
+    _abi \
+    _bytecode \
+    _compiler_output
+  _abi="$( \
+    _contract_abi_get \
+      "${_deployments_dir}" \
+      "${_target_network}" \
+      "${_contract}" \
+      "${_contract_version}")"
+  _bytecode="$( \
+    _contract_bytecode_get \
+      "${_deployments_dir}" \
+      "${_target_network}" \
+      "${_contract}" \
+      "${_contract_version}")"
+  _compiler_output="$( \
+    _contract_compiler_output_get \
+      "${_deployments_dir}" \
+      "${_target_network}" \
+      "${_contract}" \
+      "${_contract_version}")"
+  _set \
+    "${_contract_short_name}" \
+    "abi" \
+    "${_abi}"
+  _set \
+    "${_contract_short_name}" \
+    "bytecode" \
+    "${_bytecode}"
+  _set \
+    "${_contract_short_name}" \
+    "compiler_output" \
+    "${_compiler_output}"
+}
