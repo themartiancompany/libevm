@@ -96,15 +96,22 @@ _secret_get() {
 _api_key_auto_detect() {
   local \
     _chain="${1}" \
+    _selection_method \
     _chain_name \
     _key \
     _msg=()
+  if (( 1 < "$#" )); then
+    _selection_method="${2}"
+  fi
+  if [[ "${_selection_method}" == "" ]]; then
+    _selection_method="kirsh"
+  fi
   _key="$( \
     evm-chains-explorers \
       -c \
         "${_chain}" \
       -s \
-        'kirsh' \
+        "${_selection_method}" \
       get \
         keys)"
   _chain_name="$( \
