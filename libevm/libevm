@@ -103,7 +103,7 @@ _api_key_auto_detect() {
   if (( 1 < "$#" )); then
     _selection_method="${2}"
   fi
-  if [[ "${_selection_method}" == "" ]]; then
+  if [[ ! -v _selection_method ]]; then
     _selection_method="kirsh"
   fi
   _key="$( \
