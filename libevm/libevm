@@ -456,3 +456,63 @@ _contract_artifacts_auto_detect() {
     "compiler_output" \
     "${_compiler_output}"
 }
+
+_rpc_backend_get() {
+  local \
+    _chain="${1}" \
+    _chain_name \
+    _chain_id \
+    _rpc \
+    _msg=()
+  _msg=(
+    "Looking for info on EVM blockchain"
+    "'${_chain}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _chain_id="$( \
+    evm-chains-info \
+      -o \
+        "id" \
+      "${_chain}")"
+  if [[ "${_chain_id}" != "" ]]; then
+    _chain_name="$( \
+      evm-chains-info \
+        -o \
+          "name" \
+        "${_chain}" 2>/dev/null || \
+        true)"
+    _msg=(
+      "Found blockchain '${_chain_name}'"
+      "with id '${_chain_id}'"
+      "Selecting RPC address with"
+      "criterion 'kirsh'"
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _rpc="$( \
+      evm-chains-info \
+        -o \
+          "rpc" \
+        -s \
+          "kirsh" \
+        "${_chain}")"
+  elif [[ "${_chain_id}" == "" ]]; then
+    _msg=(
+      "Found no known blockchain for input"
+      "'${_chain}', interpreting given input"
+      "as an rpc address for the selected"
+      "network."
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _rpc="${_chain}"
+  fi
+  _msg=(
+    "Selected RPC address"
+    "'${_rpc}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _rpc_backend="${_rpc}"
+}
