@@ -254,7 +254,7 @@ _network_auto_detect() {
     _msg=(
      "User deployments enabled, looking"
      "for cheapest network deployments at" 
-     "path '${_contract_deployment}'"
+     "path '${_contract_deployment}'."
    )
    _msg_info \
      "${_msg[*]}"
@@ -265,7 +265,7 @@ _network_auto_detect() {
       "${_contract_deployment}")"
   if [[ "${_user}" == "y" ]]; then
     _msg=(
-      "Found network '${_network}'"
+      "Found network '${_network}'."
     )
     _msg_info \
       "${_msg[*]}"
