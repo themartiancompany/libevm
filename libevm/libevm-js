@@ -96,66 +96,6 @@ function
   return _path;
 }
 
-function
-  _network_info_get(
-    _chain_id,
-    _db_path) {
-  let
-    _db;
-  if ( _db_path == undefined ) {
-    _msg_error(
-      "Online retrieval not implemented.",
-      1);
-  }
-  _db =
-    _json_read(
-      _db_path);
-  for ( _network of _db) {
-    if ( _network["chainId"] == _chain_id ) {
-      _target_network =
-        _network;
-      return _target_network;
-    }
-  }
-  _msg_error(
-    "Network not found.",
-    1);
-}
-
-function
-  _rpc_backend_get(
-    _network_chain_id,
-    _selection_method,
-    _db_path) {
-  let
-    _chain_id,
-    _network;
-  if ( _network_chain_id == undefined ) {
-    _msg_error(
-      "Network not specified.",
-      1);
-  }
-  _chain_id =
-    Number(
-      _network_chain_id);
-  if ( _selection_method == undefined ) {
-    _selection_method =
-      "kirsh";
-  }
-  _network =
-    _network_info_get(
-      _chain_id,
-      _db_path);
-  if ( _selection_method == "kirsh" ) {
-    return _target_network["rpc"][0];
-  }
-  else {
-    _msg_error(
-      "Unknown selection method",
-      1);
-  }
-}
-
 module.exports = {
   _contract_abi_get:
     _contract_abi_get,
@@ -163,6 +103,4 @@ module.exports = {
     _contract_bytecode_get,
   _contract_compiler_output_get:
     _contract_compiler_output_get,
-  _rpc_backend_get:
-    _rpc_backend_get,
 }
