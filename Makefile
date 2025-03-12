@@ -39,7 +39,8 @@ install: install-scripts install-doc
 
 install-scripts:
 
-	install -vDm 755 "$(_PROJECT)/$(_PROJECT)" "$(LIB_DIR)/$(_PROJECT)"
+	install -vDm 644 "$(_PROJECT)/$(_PROJECT)" "$(LIB_DIR)/$(_PROJECT)"
+	install -vDm 644 "$(_PROJECT)/$(_PROJECT)-js" "$(LIB_DIR)/$(_PROJECT)-js"
 	install -vDm 755 "$(_PROJECT)/$(_PROJECT)-requirements" "$(BIN_DIR)/$(_PROJECT)-requirements"
 
 install-doc:
