@@ -271,9 +271,9 @@ _network_auto_detect() {
   _contract_deployment="${_deployments}/${_contract}"
   if [[ "${_user}" == "y" ]]; then
     _msg=(
-     "User deployments enabled, looking"
-     "for cheapest network deployments at" 
-     "path '${_contract_deployment}'"
+      "User deployments enabled, looking"
+      "for cheapest network deployments at" 
+      "path '${_contract_deployment}'."
    )
    _msg_info \
      "${_msg[*]}"
@@ -284,7 +284,7 @@ _network_auto_detect() {
       "${_contract_deployment}")"
   if [[ "${_user}" == "y" ]]; then
     _msg=(
-      "Found network '${_network}'"
+      "Found network '${_network}'."
     )
     _msg_info \
       "${_msg[*]}"
@@ -326,6 +326,10 @@ _contract_address_auto_detect() {
     _address \
     _evm_contract_deployment_address_opts=() \
     _msg=()
+  if [[ "${_network}" == "" ]]; then
+    _msg_error \
+      "The network argument is required."
+  fi
   _evm_contract_deployment_address_opts+=(
     -n
       "${_network}"
