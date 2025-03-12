@@ -468,10 +468,15 @@ _contract_artifacts_auto_detect() {
 _rpc_backend_get() {
   local \
     _chain="${1}" \
+    _selection_method \
     _chain_name \
     _chain_id \
     _rpc \
     _msg=()
+  _selection_method="kirsh"
+  if (( 1 < "$#" )); then
+    _selection_method="${2}"
+  fi
   _msg=(
     "Looking for info on EVM blockchain"
     "'${_chain}'."
@@ -494,7 +499,7 @@ _rpc_backend_get() {
       "Found blockchain '${_chain_name}'"
       "with id '${_chain_id}'"
       "Selecting RPC address with"
-      "criterion 'kirsh'"
+      "criterion 'kirsh'."
     )
     _msg_info \
       "${_msg[*]}"
@@ -503,7 +508,7 @@ _rpc_backend_get() {
         -o \
           "rpc" \
         -s \
-          "kirsh" \
+	  "${_selection_method}" \
         "${_chain}")"
   elif [[ "${_chain_id}" == "" ]]; then
     _msg=(
