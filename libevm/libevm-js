@@ -37,8 +37,8 @@ _evm_chains_db_path_get =
   _evm_chains_info_module._evm_chains_db_path_get;
 _rpc_backend_get =
   _evm_chains_info_module._rpc_backend_get;
-_chain_info_get =
-  _evm_chains_info_module._chain_info_get;
+_evm_chain_info_get =
+  _evm_chains_info_module._evm_chain_info_get;
 
 function
   _contract_abi_get(
@@ -115,8 +115,8 @@ module.exports = {
     _contract_compiler_output_get,
   _evm_chains_db_path_get:
     _evm_chains_db_path_get,
-  _chain_info_get:
-    _chain_info_get,
+  _evm_chain_info_get:
+    _evm_chain_info_get,
   _rpc_backend_get:
     _rpc_backend_get
 }
