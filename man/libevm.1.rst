@@ -55,7 +55,7 @@ to write native applications interacting with
 Ethereum Virtual Machine (EVM) compatible blockchain networks.
 
 The library depends on
-`Crash Bash`_, `EVM Chains Info`_, `EVM Chains Explorers`_,
+[Crash Bash]_, [EVM Chains Info]_, `EVM Chains Explorers`_,
 the `EVM Contracts Tools`_, and it is supposed to be used
 with `EVM Wallet`_ and `Solidity Compiler`_.
 
@@ -105,5 +105,11 @@ See also
 * evm-make
 * evm-wallet
 * solidity-compiler
+
+External Resources
+===================
+
+.. [Crash Bash] `Crash Bash`_
+.. [EVM Chains Info] `EVM Chains Info`_
 
 .. include:: variables.rst
