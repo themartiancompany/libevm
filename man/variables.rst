@@ -17,9 +17,9 @@
      https://github.com/themartiancompany/evmfs
 .. _Ur:
      https://github.com/themartiancompany/ur
-.. _pub:
+.. _Pub:
      https://github.com/themartiancompany/pub
-.. _aspe:
+.. _Aspe:
      https://github.com/themartiancompany/aspe
 .. _EVM OpenPGP Key Server:
      https://github.com/themartiancompany/evm-openpgp-keyserver

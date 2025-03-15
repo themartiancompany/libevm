@@ -109,17 +109,17 @@ See also
 External Resources
 ===================
 
-.. [1] `Crash Bash`_
-.. [2] `EVM Chains Info`_
-.. [3] `EVM Chains Explorers`_
-.. [4] `EVM Contracts Tools`_
-.. [5] `EVM Wallet`_
-.. [6] `Solidity Compiler`_
-.. [7] `EVM Make`_
-.. [8] `Ethereum Virtual Machine File System`_
-.. [9] `Ur`_
-.. [10] `pub`_
-.. [11] `aspe`_
+.. [1]  `Crash Bash`_
+.. [2]  `EVM Chains Info`_
+.. [3]  `EVM Chains Explorers`_
+.. [4]  `EVM Contracts Tools`_
+.. [5]  `EVM Wallet`_
+.. [6]  `Solidity Compiler`_
+.. [7]  `EVM Make`_
+.. [8]  `Ethereum Virtual Machine File System`_
+.. [9]  `Ur`_
+.. [10] `Pub`_
+.. [11] `Aspe`_
 .. [12] `EVM OpenPGP Key Server`_
 
 .. include:: variables.rst
