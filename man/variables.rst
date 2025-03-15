@@ -1,7 +1,7 @@
 .. |version| replace:: insert.version.here
-.. _Crash Bash:
+.. _Crash Bash HTTP Mirror:
      https://github.com/themartiancompany/crash-bash
-.. _EVM Chains Info:
+.. _EVM Chains Info HTTP Mirror:
      https://github.com/themartiancompany/evm-chains-info
 .. _EVM Chains Explorers:
      https://github.com/themartiancompany/evm-chains-explorers
