@@ -55,12 +55,12 @@ to write native applications interacting with
 Ethereum Virtual Machine (EVM) compatible blockchain networks.
 
 The library depends on Crash Bash [1]_, EVM Chains Info [2]_,
-EVM Chains Explorers [3]_,
-the `EVM Contracts Tools`_, and it is supposed to be used
-with `EVM Wallet`_ and `Solidity Compiler`_.
+EVM Chains Explorers [3]_, the EVM Contracts Tools [4]_,
+and it is supposed to be used
+with EVM Wallet [5]_ and Solidity Compiler [6]_.
 
 The build reference tool for applications using the library
-is `EVM Make`_.
+is EVM Make [7]_.
 
 The library, together with the aforementioned applications
 as well as others makes up the EVM Toolchain.
@@ -68,11 +68,11 @@ as well as others makes up the EVM Toolchain.
 EVM stands for *Ethereum Virtual Machine*.
 
 Significant applications developed using the library are
-the `Ethereum Virtual Machine File System`_ (EVMFS),
-the `Ur`_ uncensorable Life and DogeOS user repository
+the Ethereum Virtual Machine File System (EVMFS) [8]_,
+the Ur [9]_ uncensorable Life and DogeOS user repository
 and application store, its reference
-`pub`_ publishing tool and source retrieval tool `aspe`_,
-`EVM OpenPGP Key Server`_, the uncensorable, undeletable,
+pub [10]_ publishing tool and source retrieval tool aspe [11]_,
+EVM OpenPGP Key Server [12]_, the uncensorable, undeletable,
 distributed, network-neutral, decentralized Twitter
 (whose sources are entirely hosted on
 the EVMFS) and many others currently in development.
@@ -112,5 +112,14 @@ External Resources
 .. [1] `Crash Bash`_
 .. [2] `EVM Chains Info`_
 .. [3] `EVM Chains Explorers`_
+.. [4] `EVM Contracts Tools`_
+.. [5] `EVM Wallet`_
+.. [6] `Solidity Compiler`_
+.. [7] `EVM Make`_
+.. [8] `Ethereum Virtual Machine File System`_
+.. [9] `Ur`_
+.. [10] `pub`_
+.. [11] `aspe`_
+.. [12] `EVM OpenPGP Key Server`_
 
 .. include:: variables.rst
