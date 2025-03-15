@@ -54,8 +54,8 @@ Bash and JavaScript library providing useful functions
 to write native applications interacting with
 Ethereum Virtual Machine (EVM) compatible blockchain networks.
 
-The library depends on
-:ref:`Crash Bash <crash-bash>`, :ref:`EVM Chains Info <evm-chains-info>`, `EVM Chains Explorers`_,
+The library depends on Crash Bash [1]_, EVM Chains Info [2]_,
+EVM Chains Explorers [3]_,
 the `EVM Contracts Tools`_, and it is supposed to be used
 with `EVM Wallet`_ and `Solidity Compiler`_.
 
@@ -109,9 +109,8 @@ See also
 External Resources
 ===================
 
-.. _crash-bash:
-     `Crash Bash HTTP Mirror`_
-.. _evm-chains-info:
-     `EVM Chains Info HTTP Mirror`_
+.. [1] `Crash Bash`_
+.. [2] `EVM Chains Info`_
+.. [3] `EVM Chains Explorers`_
 
 .. include:: variables.rst
