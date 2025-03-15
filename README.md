@@ -21,7 +21,9 @@
 
 # Ethereum Virtual Machine (EVM) Library
 
-A Bash and JavaScript library containing useful functions to write native applications interacting with EVM-compatible blockchain networks.
+A Bash and JavaScript library providing useful functions
+to write native applications interacting with EVM-compatible
+blockchain networks.
 
 The library depends on
 [Crash Bash](
