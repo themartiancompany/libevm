@@ -24,6 +24,7 @@ _PROJECT=libevm
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
 BIN_DIR=$(DESTDIR)$(PREFIX)/bin
 LIB_DIR=$(DESTDIR)$(PREFIX)/lib/$(_PROJECT)
+MAN_DIR?=$(DESTDIR)$(PREFIX)/share/man
 
 DOC_FILES=$(wildcard *.rst)
 SCRIPT_FILES=$(wildcard $(_PROJECT)/*)
@@ -47,4 +48,16 @@ install-doc:
 
 	install -vDm 644 $(DOC_FILES) -t $(DOC_DIR)
 
-.PHONY: check install install-doc install-scripts shellcheck
+install-man:
+
+	install \
+	  -vdm755 \
+	  "$(MAN_DIR)/man1"
+	rst2man \
+	  "man/$(_PROJECT).1.rst" \
+	  "$(MAN_DIR)/man1/$(_PROJECT).1"
+	rst2man \
+	  "man/$(_PROJECT)-js.1.rst" \
+	  "$(MAN_DIR)/man1/$(_PROJECT)-js.1"
+
+.PHONY: check install install-doc install-man install-scripts shellcheck
