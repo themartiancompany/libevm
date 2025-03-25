@@ -469,8 +469,6 @@ _rpc_backend_get() {
   local \
     _chain="${1}" \
     _selection_method \
-    _chain_name \
-    _chain_id \
     _rpc \
     _msg=()
   _selection_method="kirsh"
