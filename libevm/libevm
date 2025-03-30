@@ -604,7 +604,7 @@ _wallet_overrides_set() {
       "${_wallet_app}" \
       "${wallet_name}"
     _wallet_address_get_cmd_setup \
-      "${_app_name}"
+      "${_wallet_app}"
     _wallet_address="$( \
       "${_wallet_address_get_cmd[@]}")"
   elif [[ "${_call_auth}" == "n" ]]; then
