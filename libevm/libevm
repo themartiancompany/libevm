@@ -553,9 +553,18 @@ _libevm_global_variables() {
   wallet_address=""
   wallet_seed=""
   api_key=""
+  networks_amount=""
   target_network=""
   target_networks=()
   rpc_selection=""
+  retries_max=""
+  call_timeout=""
+  msg_value=""
+}
+
+_libevm_app_global_variables() {
+  deployments_dir=""
+  user_level=""
 }
 
 _wallet_overrides_set() {
