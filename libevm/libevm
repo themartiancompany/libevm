@@ -552,6 +552,8 @@ _wallet_setup() {
     _call_auth="${3}" \
     _wallet_address \
     _wallet_path \
+    _wallet_seed \
+    _wallet_password \
     _wallet_address_get_cmd=()
   _wallet_path=""
   _wallet_address=""
@@ -583,6 +585,15 @@ _wallet_setup() {
       "${_app_name}"
     _wallet_address="$( \
       "${_wallet_address_get_cmd[@]}")"
+  elif [[ "${_call_auth}" == "n" ]]; then
+    _set_override \
+      "wallet" \
+      "seed" \
+      ""
+    _set_override \
+      "wallet" \
+      "password" \
+      ""
   fi
   _set_override \
     "wallet" \
