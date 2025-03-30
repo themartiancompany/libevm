@@ -545,7 +545,19 @@ _wallet_address_get_cmd_setup() {
   fi 
 }
 
-_wallet_setup() {
+_libevm_global_variables() {
+  wallet_name=""
+  wallet_path=""
+  wallet_password=""
+  wallet_address=""
+  wallet_seed=""
+  api_key=""
+  target_network=""
+  target_networks=()
+  rpc_selection=""
+}
+
+_wallet_overrides_set() {
   local \
     _wallet_app="${1}" \
     _wallet_name="${2}" \
