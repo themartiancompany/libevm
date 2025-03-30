@@ -527,3 +527,73 @@ _rpc_backend_get() {
     "${_msg[*]}"
   _rpc_backend="${_rpc}"
 }
+
+_wallet_address_get_cmd_setup() {
+  local \
+    _wallet_app="${1}" \
+    _evm_wallet_address_get_cmd=()
+  if [[ "${_wallet_app}" == "evm-wallet" ]]; then
+    _evm_wallet_address_get_cmd+=(
+      "${_wallet_app}"
+        get
+          "${_wallet_name}"
+          "address"
+    )
+    _wallet_address_get_cmd+=(
+      "${evm_wallet_address_get_cmd[@]}"
+    )
+  fi 
+}
+
+_wallet_setup() {
+  local \
+    _wallet_app="${1}" \
+    _wallet_name="${2}" \
+    _call_auth="${3}" \
+    _wallet_address \
+    _wallet_path \
+    _wallet_address_get_cmd=()
+  _wallet_path=""
+  _wallet_address=""
+  if (( "$#" < 1 )); then
+    _wallet_app="evm-wallet"
+  fi
+  if (( "$#" < 2 )); then
+    _wallet_name="default"
+  fi
+  if (( "$#" < 3 )); then
+    _call_auth="y"
+  fi
+  if [[ "${_call_auth}" == "y" ]]; then
+    _wallet_path="$( \
+      _wallet_path_get \
+        "${_wallet_app}" \
+        "${_wallet_name}")"
+    _secret_auto_detect \
+      "seed" \
+      "seed" \
+      "${_wallet_app}" \
+      "${wallet_name}"
+    _secret_auto_detect \
+      "password" \
+      "plain" \
+      "${_wallet_app}" \
+      "${wallet_name}"
+    _wallet_address_get_cmd_setup \
+      "${_app_name}"
+    _wallet_address="$( \
+      "${_wallet_address_get_cmd[@]}")"
+  fi
+  _set_override \
+    "wallet" \
+    "name" \
+    "${_wallet_name}"
+  _set_override \
+    "wallet" \
+    "path" \
+    "${_wallet_path}"
+  _set_override \
+    "wallet" \
+    "address" \
+    "${_wallet_address}"
+}
