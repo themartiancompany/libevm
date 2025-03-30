@@ -546,6 +546,7 @@ _wallet_address_get_cmd_setup() {
 }
 
 _libevm_global_variables() {
+  call_auth=""
   wallet_name=""
   wallet_path=""
   wallet_password=""
