@@ -536,11 +536,11 @@ _wallet_address_get_cmd_setup() {
     _evm_wallet_address_get_cmd+=(
       "${_wallet_app}"
         get
-          "${_wallet_name}"
+          "${wallet_name}"
           "address"
     )
     _wallet_address_get_cmd+=(
-      "${evm_wallet_address_get_cmd[@]}"
+      "${_evm_wallet_address_get_cmd[@]}"
     )
   fi 
 }
@@ -597,12 +597,12 @@ _wallet_overrides_set() {
       "seed" \
       "seed" \
       "${_wallet_app}" \
-      "${wallet_name}"
+      "${_wallet_name}"
     _secret_auto_detect \
       "password" \
       "plain" \
       "${_wallet_app}" \
-      "${wallet_name}"
+      "${_wallet_name}"
     _wallet_address_get_cmd_setup \
       "${_wallet_app}"
     _wallet_address="$( \
