@@ -104,16 +104,18 @@ example application, look at 'ahno'.
           override_my_app_contract_version="${OPTARG}" ;;
         v) \
           override_quiet="n" ;;
-        h|?) \
+        h) \
           _set_overrides && \
           _usage \
             0 ;;
-        *)
-          _msg_error \
-            "Invalid argument '${arg}'." \
-            0 && \
-          _usage \
-            1 ;;
+        *) \
+          if [[ " ${getopts_opts} " != *"${arg}"* ]]; then
+            _msg_error \
+              "Invalid argument '${arg}'." \
+              0
+            _usage \
+              1
+          fi ;;
       esac
     done
 
