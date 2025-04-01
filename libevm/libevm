@@ -630,3 +630,32 @@ _wallet_overrides_set() {
     "address" \
     "${_wallet_address}"
 }
+
+_wallet_getopts_params_get() {
+  echo \
+    "N:w:p:s:k:"
+}
+_wallet_getopts_case() {
+  case \
+    "${arg}" in
+    N) override_wallet_name="${OPTARG}" ;;
+    w) override_wallet_path="${OPTARG}" ;;
+    p) override_wallet_password="${OPTARG}" ;;
+    s) override_wallet_seed="${OPTARG}" ;;
+    k) override_api_key="${OPTARG}" ;;
+  esac
+}
+
+_libevm_app_getopts_params_get() {
+  echo \
+    "ud:"
+}
+
+_libevm_app_getopts_case() {
+  case \
+    "${arg}" in
+    u) override_user_level="y" ;;
+    d) override_deployments_dir="${OPTARG}" ;;
+  esac
+}
+
