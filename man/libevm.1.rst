@@ -34,6 +34,17 @@ Ethereum Virtual Machine (EVM) Library
 Synopsis
 ========
 
+The libEVM is a Bash library which includes
+functions to easily write computer applications
+which interact with smart contracts functions.
+
+The following snippets of code assumes an application
+written with the Crash Bash library.
+
+If you are looking for a very old Crash Bash
+example application, look at 'ahno'.
+
+* Import:
 
 ..  code-block:: bash
 
@@ -42,10 +53,172 @@ Synopsis
         "$( \
           command \
             -v \
-            "env")")"
-    _lib="${_bin}/../lib"
-    source \
-      "${_lib}/libevm/libevm"
+    	  "env")")"
+    _lib="$( \
+      realpath \
+        "${_bin}/../lib")"
+    _crash_bash="${_lib}/libcrash-bash/crash-bash"
+    _libevm="${_lib}/libevm/libevm"   # <---
+    _sourced \
+      "${_crash_bash}" 2>/dev/null || \
+      source \
+        "${_crash_bash}"
+    _sourced \              # <---
+      "${_libevm}"          # <---
+
+* Init:
+
+..  code-block:: bash
+
+    _globals
+    _global_variables
+    _libevm_global_variables # <---
+
+* Init application:
+..  code-block:: bash
+
+    _libevm_app_global_variables  # <---
+
+* Set up command-line options:
+..  code-block:: bash
+
+    getopts_opts="$( \
+      printf \
+        "%s" \
+        "A:V:" \
+        "$(_libevm_app_getopts_params_get)" \
+        "n:" \
+        "$(_wallet_getopts_params_get)" \
+        "vh?")"
+    while \
+      getopts \
+        "${getopts_opts}" \
+        arg; do
+      _libevm_app_getopts_case
+      _wallet_getopts_case
+      case \
+        "${arg}" in
+        A) \
+          override_my_app_contract_address="${OPTARG}" ;;
+        V) \
+          override_my_app_contract_version="${OPTARG}" ;;
+        v) \
+          override_quiet="n" ;;
+        h|?) \
+          _set_overrides && \
+          _usage \
+            0 ;;
+        *)
+          _msg_error \
+            "Invalid argument '${arg}'." \
+            0 && \
+          _usage \
+            1 ;;
+      esac
+    done
+
+* Set overrides:
+
+..  code-block:: bash
+
+    _set_overrides() {
+      if [[ -v override_quiet ]]; then
+        quiet="${override_quiet}"
+      elif [[ -z "${quiet}" ]]; then
+        quiet="y"
+      fi
+      _set_override \
+        "target" \
+        "network" \
+        "100"
+      _set_override \
+        "user" \
+        "level" \
+        "n"
+      _set_override \
+        "call" \
+        "auth" \
+        "y"
+      _set_override \
+        "wallet" \
+        "name" \
+        "default"
+      _deployments_dir_auto_detect \
+        "my-app" \
+        "${user_level}"
+      _network_auto_detect \
+        "MyAppContract" \
+        "${deployments_dir}" \
+        "${user_level}"
+      _api_key_auto_detect \
+        "${target_network}"
+      _wallet_overrides_set \
+        "evm-wallet" \
+        "${wallet_name}" \
+        "${call_auth}"
+      _contract_setup_auto_detect \
+        "my-app" \
+        "MyAppContract" \
+        "my_app_contract" \
+        "${target_network}" \
+        "${user_level}" \
+        "${deployments_dir}"
+    }
+
+* Load contract artifact and run the function in your code:
+
+..  code-block:: bash
+
+    _my_application() {
+      _my_app_contract_address="${1}" \
+      _my_app_contract_version="${2}" \
+      _deployments_dir="${3}" \
+      _wallet_name="${4}" \
+      _wallet_seed="${5}" \
+      _api_key="${6}" \
+      _target_network="${7}" \
+      _my_app_contract_abi \
+      _my_app_contract_bytecode \
+      _tw_compiler_output
+    _contract_artifacts_auto_detect \
+      "${_deployments_dir}" \
+      "${_target_network}" \
+      "MyAppContract" \
+      "_my_app_contract" \
+      "${_my_app_contract_version}"
+    _evm_contract_call_opts+=(
+      -A
+        "${_my_app_contract_abi}"
+      -B
+        "${_my_app_contract_bytecode}"
+      -C
+        "${_my_app_contract_compiler_output}"
+      -N
+        "${_wallet_name}"
+      -s
+        "${_wallet_seed}"
+    )
+    _my_app_contract_function_opts=(
+      "gum"
+      "glue"
+    )
+    _function_output="$( \
+      evm-contract-call \
+        "${_evm_contract_call_opts}" \
+        "${_my_app_contract_address}" \
+        "myAppContractFunction" \
+        "${_my_app_contract_function_opts[@]}")"
+    _msg=(
+      "This is the output of my app contract"
+      "function 'myAppContractFunction' with"
+      "argument '${_my_app_contract_function_opts[*]}':"
+      "'${_function_output}'."
+    echo \
+      "${_msg[*]}"
+    }
+
+    _my_application \
+      "$@"
 
 Description
 ===========
