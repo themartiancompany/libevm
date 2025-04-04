@@ -26,10 +26,15 @@ _bin="$( \
     "$( \
       command \
         -v \
-	  "env")")"
-_lib="${_bin}/../lib"
-source \
-  "${_lib}/libcrash-bash/crash-bash"
+          "env")")"
+_lib="$( \
+  realpath \
+    "${_bin}/../lib")"
+_crash_bash="${_lib}/libcrash-bash/crash-bash"
+_sourced \
+  "${_crash_bash}" 2>/dev/null || \
+  source \
+    "${_crash_bash}"
 
 _libevm_requirements() {
   _check_cmd \
@@ -664,7 +669,7 @@ _hex_check() {
     _string="${1}" \
     _suffix \
     _not_hex
-  _suffix="${_length:2}"
+  _suffix="${_string:2}"
   _not_hex="$( \
     echo \
       "${_suffix}" | \
