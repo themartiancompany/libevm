@@ -659,3 +659,71 @@ _libevm_app_getopts_case() {
   esac
 }
 
+_hex_check() {
+  local \
+    _string="${1}" \
+    _suffix \
+    _not_hex
+  _suffix="${_length:2}"
+  _not_hex="$( \
+    echo \
+      "${_suffix}" | \
+      grep \
+        -e \
+	  "[g-z]")"
+  if [[ "${_not_hex}" != "" ]]; then
+    _msg=(
+      "Suffix '${_suffix}' is not"
+      "hexadecimal."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      1
+  fi
+}
+
+_hex_length_check() {
+  local \
+    _string="${1}" \
+    _length="${2}" \
+    _suffix \
+    _not_length
+  _hex_check \
+    "${_string}"
+  _suffix="${_string:2}"
+  _not_length=""
+  if [[ "${#_suffix}" != "${_length}" ]]; then
+    _not_length="yup"
+  fi
+  if [[ "${_not_length}" != "" ]]; then
+    _msg=(
+      "Suffix '${_suffix}' is not"
+      "'${_length}' characters long."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      1
+  fi
+}
+
+_tx_hash_sanity_check() {
+  local \
+    _tx_hash="${1}"
+  _tx_hash="$( \
+    _lower \
+      "${_tx_hash}")"
+  _hex_length_check \
+    "${_tx_hash}" \
+    "64"
+}
+
+_address_sanity_check() {
+  local \
+    _address="${1}"
+  _address="$( \
+    _lower \
+      "${_address}")"
+  _hex_length_check \
+    "${_address}" \
+    "40"
+}
