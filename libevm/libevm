@@ -675,7 +675,8 @@ _hex_check() {
       "${_suffix}" | \
       grep \
         -e \
-	  "[g-z]")"
+	  "[g-z]" || \
+      true)"
   if [[ "${_not_hex}" != "" ]]; then
     _msg=(
       "Suffix '${_suffix}' is not"
