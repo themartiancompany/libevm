@@ -51,7 +51,12 @@ _libevm_requirements() {
     'evm-contract-deployments-dir' \
     'evm-contracts-tools'
   _check_cmd \
+    'evm-contracts-source-get' \
+    'evm-contracts-source-index'
+  _check_cmd \
     'key-gen'
+  _check_cmd \
+    'solidity-compiler'
 }
 
 _contract_abi_get() {
@@ -732,4 +737,198 @@ _address_sanity_check() {
   _hex_length_check \
     "${_address}" \
     "40"
+}
+
+_contract_artifacts_explorer_retrieve() {
+  local \
+    _evm_contracts_abi_get_opts=() \
+    _msg=() \
+    _data_dir
+  _msg=(
+    "No contract ABI or compiler output"
+    "available, attempting to obtain it from"
+    "a network's censorable contracts ABI"
+    "provider at path '${_abi_target}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _data_dir="$( \
+    dirname \
+      "${_abi}")"
+  mkdir \
+    -p \
+    "${_data_dir}"
+  chmod \
+    700 \
+    "${_data_dir}"
+  if [[ "${quiet}" == "n" ]]; then
+    _evm_contracts_abi_get_opts+=(
+      --verbose
+    )
+  fi
+  _evm_contracts_abi_get_opts+=(
+    --network
+      "${_network}"
+    --key 
+      "${_key}"
+    --output-file
+      "${_abi_target}"
+  )
+  if [ ! -e "${_key}" ]; then
+    _msg=(
+      "Contract ABI censorable provider API"
+      "key '${_key}' not found,"
+      "fetch the ABI from the"
+      "provider may not work."
+    )
+    _msg_info \
+      "${_msg[*]}"
+  elif [ -e "${_key}" ]; then
+    _evm_contracts_abi_get_opts+=(
+      --key 
+        "${_key}"
+    )
+  fi
+  evm-contracts-abi-get \
+    "${_evm_contracts_abi_get_opts[@]}" \
+    "${_address}"
+  if [ $? -eq 0 ]; then
+    _msg=(
+      "Obtained ABI from a censorable network explorer,"
+      "setting contract ABI value to '${_abi_target}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _abi="${_abi_target}"
+  else
+    _msg=(
+      "Couldn't obtain contract ABI from a"
+      "censorable network explorer."
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _abi=""
+  fi
+}
+
+_contract_artifacts_index_retrieve() {
+  local \
+    _cache_dir="${1}" \
+    _evm_contracts_source_get_opts=() \
+    _solidity_compiler_opts=() \
+    _msg=() \
+    _contract_compiler \
+    _compiler_version \
+    _evm_version \
+    _target_contract \
+    _source_get_cache_dir \
+    _source_dir \
+    _data_dir \
+    _output_dir
+  _msg=(
+    "No contract ABI or compiler output"
+    "available, attempting to obtain the source from"
+    "the network-neutral uncensorable on-chain"
+    "Contracts Source Index and build it"
+    "at path '${_abi_target}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _source_get_cache_dir="${HOME}/.cache/evm-contract-source-get"
+  _source_dir="${_source_get_cache_dir}/${_network}/${_address}"
+  _contract_compiler="${_source_dir}/contract_compiler.txt"
+  _compiler_version="${_source_dir}/compiler_version.txt"
+  _evm_version="${_source_dir}/evm_version.txt"
+  _target_contract="${_source_dir}/${_address}.sol"
+  if [[ "${quiet}" == "n" ]]; then
+    _evm_contracts_source_get_opts+=(
+      -v
+    )
+    _solidity_compiler_opts+=(
+      -v
+    )
+  fi
+  _evm_contracts_source_get_opts+=(
+    -n
+      "${_network}"
+    -t
+      "all"
+  )
+  _solidity_compiler_opts+=(
+    -b
+      "${_contract_compiler}"
+    -C
+      "${_compiler_version}"
+    -e
+      "${_evm_version}"
+    -o
+      "${_cache_dir}"
+  )
+  _msg=(
+    "Retrieving contract '${_address}'"
+    "source and build data"
+    "from the EVM Contracts Source Index."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  evm-contracts-source-get \
+    "${_evm_contracts_source_get_opts[@]}" \
+    "${_network}" \
+    "${_address}"
+  _msg_info \
+    "${_msg[*]}"
+  _msg=(
+    "Building contract '${_address}'."
+  )
+  solidity-compiler \
+    "${_solidity_compiler_opts[@]}" \
+    "${_target_contract}"
+  if [[ "${_contract_compiler}" == "solc" ]]; then
+    _abi="${_cache_dir}/${_address}.abi.json"
+    _bytecode="${_cache_dir}/${_address}.bin"
+  elif [[ "${_contract_compiler}" == "hardhat" ]]; then
+    _compiler_output="${_cache_dir}/contracts/${_address}.sol/${_address}.json"
+  fi
+  _msg=(
+    "Obtained artifacts from the on-chain"
+    "uncensorable EVM Smart Contracts Source Index."
+  )
+  _msg_info \
+    "${_msg[*]}"
+}
+
+_contract_artifacts_retrieve() {
+  local \
+    _cache_dir="${1}" \
+    _explorer="${2}" \
+    _index="${3}"
+  if (( "$#" < 1 )); then
+    _cache_dir="${HOME}/.cache/libevm"
+    mkdir \
+      -p \
+      "${_cache_dir}"
+    chmod \
+      700 \
+      "${_cache_dir}"
+  fi
+  if (( "$#" < 2 )); then
+    _explorer=""
+  fi
+  if (( "$#" < 3 )); then
+    _index=""
+  fi
+  if [[ "${_explorer}" == "" ]]; then
+    _explorer="y"
+  fi
+  if [[ "${_index}" == "" ]]; then
+    _index="y"
+  fi
+  if [[ "${_explorer}" == "y" ]]; then
+    _contract_artifacts_explorer_retrieve
+  fi
+  if [[ "${_index}" == "y" ]] || \
+     [[ ! -e "${_abi}" ]]; then
+    _contract_artifacts_index_retrieve \
+      "${_cache_dir}"
+  fi
 }
