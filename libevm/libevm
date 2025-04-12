@@ -190,17 +190,15 @@ _secret_auto_detect() {
         "${_secret_type}"
     )
     _msg=(
-      "generating ${_secret} '${_path}'"
+      "Not found '${_path}'."
+      "Generating secret '${_secret}'"
+      "of type '${_secret_type}'"
+      "at path '${_path}'."
     )
-    if [[ "${quiet}" == "n" ]]; then
-      _msg_info \
-        "${_msg[*]}"
-    fi
+    _msg_info \
+      "${_msg[*]}"
     mkdir \
       -p \
-      "${_dir}"
-    chmod \
-      700 \
       "${_dir}"
     chmod \
       700 \
@@ -212,7 +210,8 @@ _secret_auto_detect() {
       400 \
       "${_path}"
     _msg=(
-      "${_secret} '${_path}' successfully generated"
+      "Secret '${_secret}' at path"
+      "'${_path}' successfully generated."
     )
     if [[ "${quiet}" == "n" ]]; then
       _msg_info \
