@@ -371,9 +371,9 @@ _contract_address_auto_detect() {
       "${_contract}")"
   if [[ "${_address}" == "" ]]; then
     _msg=(
-      "error getting '${_contract}' version"
+      "Error getting '${_contract}' version"
       "${_version} deployment address"
-      "for network '${_network}'"
+      "for network '${_network}'."
     )
     _msg_error \
       "${_msg[*]}" \
