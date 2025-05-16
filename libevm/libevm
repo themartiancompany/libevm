@@ -51,7 +51,7 @@ _libevm_requirements() {
     'evm-contract-deployments-dir' \
     'evm-contracts-tools'
   _check_cmd \
-    'evm-contracts-source-get' \
+    'evm-contract-source-get' \
     'evm-contracts-source-index'
   _check_cmd \
     'key-gen'
