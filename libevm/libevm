@@ -547,8 +547,6 @@ _wallet_address_get_cmd_setup() {
   if [[ "${_wallet_app}" == "evm-wallet" ]]; then
     _lib="$( \
       _get_lib)/${_wallet_app}/address-get"
-    _rpc_backend_get \
-      "${_target_network}"
     _evm_wallet_address_get_cmd+=(
       node-run \
         "${_node_run_opts}"
