@@ -540,13 +540,25 @@ _rpc_backend_get() {
 _wallet_address_get_cmd_setup() {
   local \
     _wallet_app="${1}" \
-    _evm_wallet_address_get_cmd=()
+    _wallet_seed="${2}" \
+    _evm_wallet_address_get_cmd=() \
+    _lib \
+    _node_run_opts=()
   if [[ "${_wallet_app}" == "evm-wallet" ]]; then
+    _lib="$( \
+      _get_lib)/${_wallet_app}/address-get"
+    _rpc_backend_get \
+      "${_target_network}"
     _evm_wallet_address_get_cmd+=(
-      "${_wallet_app}"
-        get
-          "${wallet_name}"
-          "address"
+      node-run \
+        "${_node_run_opts}"
+        "$(_get_lib)/${_wallet_app}/address-get"
+          "${quiet}"
+          "${_wallet_seed}"
+      # "${_wallet_app}"
+      #   get
+      #     "${wallet_name}"
+      #     "address"
     )
     _wallet_address_get_cmd+=(
       "${_evm_wallet_address_get_cmd[@]}"
@@ -613,7 +625,8 @@ _wallet_overrides_set() {
       "${_wallet_app}" \
       "${_wallet_name}"
     _wallet_address_get_cmd_setup \
-      "${_wallet_app}"
+      "${_wallet_app}" \
+      "${wallet_seed}"
     _wallet_address="$( \
       "${_wallet_address_get_cmd[@]}")"
   elif [[ "${_call_auth}" == "n" ]]; then
