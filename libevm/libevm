@@ -553,7 +553,7 @@ _wallet_address_get_cmd_setup() {
       node-run \
         "${_node_run_opts}"
         "$(_get_lib)/${_wallet_app}/address-get"
-          "${quiet}"
+	  "y"
           "${_wallet_seed}"
       # "${_wallet_app}"
       #   get
