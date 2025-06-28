@@ -548,8 +548,8 @@ _wallet_address_get_cmd_setup() {
     _lib="$( \
       _get_lib)/${_wallet_app}/address-get"
     _evm_wallet_address_get_cmd+=(
-      node-run \
-        "${_node_run_opts}"
+      node-run
+        "${_node_run_opts[@]}"
         "$(_get_lib)/${_wallet_app}/address-get"
 	  "y"
           "${_wallet_seed}"
