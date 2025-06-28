@@ -75,11 +75,13 @@ example application, look at 'ahno'.
     _libevm_global_variables # <---
 
 * Init application:
+
 ..  code-block:: bash
 
     _libevm_app_global_variables  # <---
 
 * Set up command-line options:
+
 ..  code-block:: bash
 
     getopts_opts="$( \
@@ -280,6 +282,7 @@ See also
 * evm-make
 * evm-wallet
 * solidity-compiler
+
 
 External Resources
 ===================
