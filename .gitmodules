@@ -1,0 +1,3 @@
+[submodule "libevm/nodejs"]
+	path = libevm/nodejs
+	url = https://github.com/themartiancompany/libevm.js
