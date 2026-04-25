@@ -1,3 +1,6 @@
 [submodule "libevm/nodejs"]
 	path = libevm/nodejs
 	url = https://github.com/themartiancompany/libevm.js
+[submodule "man"]
+	path = man
+	url = https://github.com/themartiancompany/libevm-man
