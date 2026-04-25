@@ -24,6 +24,7 @@ _PROJECT=libevm
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
 BIN_DIR=$(DESTDIR)$(PREFIX)/bin
 LIB_DIR=$(DESTDIR)$(PREFIX)/lib/$(_PROJECT)
+NODE_DIR=$(DESTDIR)$(PREFIX)/lib/node_modules/$(_PROJECT)
 MAN_DIR?=$(DESTDIR)$(PREFIX)/share/man
 
 _INSTALL_FILE=\
@@ -43,7 +44,20 @@ SCRIPT_FILES=\
   $(wildcard \
       $(_PROJECT)/*)
 
-all:
+all: build-npm submodules
+
+submodules:
+
+	git \
+	  submodule \
+	    update \
+	    --init \
+	      "man"
+	git \
+	  submodule \
+	    update \
+	    --init \
+	      "$(_PROJECT)/nodejs"
 
 check: shellcheck
 
@@ -54,7 +68,16 @@ shellcheck:
 	    "bash" \
 	  $(SCRIPT_FILES)
 
+build-npm:
+
+	cd \
+	  "$(_PROJECT)/nodejs"; \
+	make \
+	  build-npm
+
+
 install: install-scripts install-doc install-man
+
 
 install-scripts:
 
@@ -62,11 +85,27 @@ install-scripts:
 	  "$(_PROJECT)/$(_PROJECT)" \
 	  "$(LIB_DIR)/$(_PROJECT)"
 	$(_INSTALL_FILE) \
-	  "$(_PROJECT)/$(_PROJECT)-js" \
+	  "$(_PROJECT)/nodejs/$(_PROJECT)" \
 	  "$(LIB_DIR)/$(_PROJECT)-js"
 	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/$(_PROJECT)-requirements" \
 	  "$(BIN_DIR)/$(_PROJECT)-requirements"
+
+install-npm:
+
+	cd \
+	  "$(_PROJECT)/nodejs"; \
+	make \
+	  install-npm; \
+	cd \
+	  "../.."
+	$(_INSTALL_DIR) \
+	  "$(LIB_DIR)"
+	ln \
+	  -s \
+	  "$(NODE_DIR)/$(_PROJECT)" \
+	  "$(LIB_DIR)/$(_PROJECT)-js" || \
+	  true
 
 install-doc:
 
@@ -83,7 +122,7 @@ install-man:
 	  "man/$(_PROJECT).1.rst" \
 	  "$(MAN_DIR)/man1/$(_PROJECT).1"
 	rst2man \
-	  "man/$(_PROJECT)-js.1.rst" \
-	  "$(MAN_DIR)/man1/$(_PROJECT)-js.1"
+	  "man/$(_PROJECT).js.1.rst" \
+	  "$(MAN_DIR)/man1/$(_PROJECT).js.1"
 
-.PHONY: check install install-doc install-man install-scripts shellcheck
+.PHONY: check install install-doc install-man install-scripts shellcheck submodules
