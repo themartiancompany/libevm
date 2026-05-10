@@ -110,14 +110,24 @@ _secret_get() {
     _secret="${1}" \
     _app="${2}" \
     _wallet_name="${3}" \
-    _path
+    _qr \
+    _path \
+    _config_dir
+  _config_dir="${HOME}/.config/${_app}"
+  _qr="n"
+  if (( 3 < "${#}" )); then
+    _qr="${4}"
+  fi
   if [[ "${_app}" == "" ]]; then
     _app="evm-wallet"
   fi
   if [[ "${_wallet_name}" == "" ]]; then
     _wallet_name="default"
   fi
-  _path="${HOME}/.config/${_app}/${_wallet_name}-${_secret}.txt"
+  if [[ "${_qr}" == "y" ]]; then
+    _config_dir="${_config_dir}/qr"
+  fi
+  _path="${_config_dir}/${_wallet_name}-${_secret}.txt"
   echo \
     "${_path}"
 }
@@ -173,14 +183,20 @@ _secret_auto_detect() {
     _secret_type="${2}" \
     _app="${3}" \
     _wallet_name="${4}" \
+    _qr \
     _dir \
     _key_gen_opts=() \
     _msg=()
+  _qr="n"
+  if (( 4 < "${#}" )); then
+    _qr="${5}"
+  fi
   _path="$( \
     _secret_get \
       "${_secret}" \
       "${_app}" \
-      "${_wallet_name}")"
+      "${_wallet_name}" \
+      "${_qr}")"
   _dir="$( \
     dirname \
       "${_path}")"
@@ -588,9 +604,10 @@ _libevm_app_global_variables() {
 
 _wallet_overrides_set() {
   local \
-    _wallet_app="${1}" \
-    _wallet_name="${2}" \
-    _call_auth="${3}" \
+    _wallet_app \
+    _wallet_name \
+    _call_auth \
+    _qr \
     _wallet_address \
     _wallet_path \
     _wallet_seed \
@@ -598,14 +615,21 @@ _wallet_overrides_set() {
     _wallet_address_get_cmd=()
   _wallet_path=""
   _wallet_address=""
-  if (( "$#" < 1 )); then
-    _wallet_app="evm-wallet"
+  _wallet_app="evm-wallet"
+  if (( 0 < "${#}" )); then
+    _wallet_app="${1}"
   fi
-  if (( "$#" < 2 )); then
     _wallet_name="default"
+  if (( 1 < "${#}" )); then
+    _wallet_name="${2}"
   fi
-  if (( "$#" < 3 )); then
-    _call_auth="y"
+  _call_auth="y"
+  if (( 2 < "${#}" )); then
+    _call_auth="${3}"
+  fi
+  _qr="n"
+  if (( 3 < "${#}" )); then
+    _qr="${4}"
   fi
   if [[ "${_call_auth}" == "y" ]]; then
     _wallet_path="$( \
@@ -616,12 +640,14 @@ _wallet_overrides_set() {
       "seed" \
       "seed" \
       "${_wallet_app}" \
-      "${_wallet_name}"
+      "${_wallet_name}" \
+      "${_qr}"
     _secret_auto_detect \
       "password" \
       "plain" \
       "${_wallet_app}" \
-      "${_wallet_name}"
+      "${_wallet_name}" \
+      "${_qr}"
     _wallet_address_get_cmd_setup \
       "${_wallet_app}" \
       "${wallet_seed}"
