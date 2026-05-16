@@ -21,13 +21,12 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-_bin="$( \
+_bin="$(
   dirname \
-    "$( \
-      command \
-        -v \
-          "env")")"
-_lib="$( \
+    "$(command \
+         -v \
+         "env")")"
+_lib="$(
   realpath \
     "${_bin}/../lib")"
 _crash_bash="${_lib}/libcrash-bash/crash-bash"
@@ -145,7 +144,7 @@ _api_key_auto_detect() {
   if [[ ! -v _selection_method ]]; then
     _selection_method="kirsh"
   fi
-  _key="$( \
+  _key="$(
     evm-chains-explorers \
       -c \
         "${_chain}" \
@@ -153,7 +152,7 @@ _api_key_auto_detect() {
         "${_selection_method}" \
       get \
         keys)"
-  _chain_name="$( \
+  _chain_name="$(
     evm-chains-info \
       -o \
         "name" \
@@ -191,13 +190,13 @@ _secret_auto_detect() {
   if (( 4 < "${#}" )); then
     _qr="${5}"
   fi
-  _path="$( \
+  _path="$(
     _secret_get \
       "${_secret}" \
       "${_app}" \
       "${_wallet_name}" \
       "${_qr}")"
-  _dir="$( \
+  _dir="$(
     dirname \
       "${_path}")"
   if [[ ! -e "${_path}" ]]; then
@@ -252,12 +251,12 @@ _deployments_dir_auto_detect() {
       -u
     )
   fi
-  _deployments_dir="$( \
+  _deployments_dir="$(
     evm-contract-deployments-dir \
       "${_evm_contract_deployments_dir_opts[@]}" \
       "${_app}")"
   if [[ ! -d "${_deployments_dir}" ]]; then
-    _system_deployments="$( \
+    _system_deployments="$(
      evm-contract-deployments-dir \
        "${_app}")"
     _msg=(
@@ -303,7 +302,7 @@ _network_auto_detect() {
    _msg_info \
      "${_msg[*]}"
   fi
-  _network="$( \
+  _network="$(
     evm-contract-deployment-networks \
       -C \
       "${_contract_deployment}")"
@@ -329,7 +328,7 @@ _contract_version_auto_detect() {
     _config \
     _version
   _config="${_deployments}/${_contract}/${_network}/config.sh"
-  _version="$( \
+  _version="$(
     evm-contract-deployment-versions \
       -H \
       "${_config}")"
@@ -381,7 +380,7 @@ _contract_address_auto_detect() {
         "${_deployments}" 
     )
   fi
-  _address="$( \
+  _address="$(
     evm-contract-deployment-address \
       "${_evm_contract_deployment_address_opts[@]}" \
       "${_contract}")"
@@ -436,7 +435,7 @@ _display_networks() {
     )
   for _network \
     in "${_networks[@]}"; do
-    _network_name="$( \
+    _network_name="$(
       evm-chains-info \
         -i \
           "id" \
@@ -458,19 +457,19 @@ _contract_artifacts_auto_detect() {
     _abi \
     _bytecode \
     _compiler_output
-  _abi="$( \
+  _abi="$(
     _contract_abi_get \
       "${_deployments_dir}" \
       "${_target_network}" \
       "${_contract}" \
       "${_contract_version}")"
-  _bytecode="$( \
+  _bytecode="$(
     _contract_bytecode_get \
       "${_deployments_dir}" \
       "${_target_network}" \
       "${_contract}" \
       "${_contract_version}")"
-  _compiler_output="$( \
+  _compiler_output="$(
     _contract_compiler_output_get \
       "${_deployments_dir}" \
       "${_target_network}" \
@@ -506,13 +505,13 @@ _rpc_backend_get() {
   )
   _msg_info \
     "${_msg[*]}"
-  _chain_id="$( \
+  _chain_id="$(
     evm-chains-info \
       -o \
         "id" \
       "${_chain}")"
   if [[ "${_chain_id}" != "" ]]; then
-    _chain_name="$( \
+    _chain_name="$(
       evm-chains-info \
         -o \
           "name" \
@@ -526,12 +525,12 @@ _rpc_backend_get() {
     )
     _msg_info \
       "${_msg[*]}"
-    _rpc="$( \
+    _rpc="$(
       evm-chains-info \
         -o \
           "rpc" \
         -s \
-	  "${_selection_method}" \
+          "${_selection_method}" \
         "${_chain}")"
   elif [[ "${_chain_id}" == "" ]]; then
     _msg=(
@@ -561,7 +560,7 @@ _wallet_address_get_cmd_setup() {
     _lib \
     _node_run_opts=()
   if [[ "${_wallet_app}" == "evm-wallet" ]]; then
-    _lib="$( \
+    _lib="$(
       _get_lib)/${_wallet_app}/address-get"
     _evm_wallet_address_get_cmd+=(
       node-run
@@ -607,7 +606,7 @@ _wallet_overrides_set() {
     _wallet_app \
     _wallet_name \
     _call_auth \
-    _qr \
+    _qr_support \
     _wallet_address \
     _wallet_path \
     _wallet_seed \
@@ -627,12 +626,12 @@ _wallet_overrides_set() {
   if (( 2 < "${#}" )); then
     _call_auth="${3}"
   fi
-  _qr="n"
+  _qr_support="n"
   if (( 3 < "${#}" )); then
-    _qr="${4}"
+    _qr_support="${4}"
   fi
   if [[ "${_call_auth}" == "y" ]]; then
-    _wallet_path="$( \
+    _wallet_path="$(
       _wallet_path_get \
         "${_wallet_app}" \
         "${_wallet_name}")"
@@ -641,17 +640,17 @@ _wallet_overrides_set() {
       "seed" \
       "${_wallet_app}" \
       "${_wallet_name}" \
-      "${_qr}"
+      "${_qr_support}"
     _secret_auto_detect \
       "password" \
       "plain" \
       "${_wallet_app}" \
       "${_wallet_name}" \
-      "${_qr}"
+      "${_qr_support}"
     _wallet_address_get_cmd_setup \
       "${_wallet_app}" \
       "${wallet_seed}"
-    _wallet_address="$( \
+    _wallet_address="$(
       "${_wallet_address_get_cmd[@]}")"
   elif [[ "${_call_auth}" == "n" ]]; then
     _set_override \
@@ -716,9 +715,9 @@ _hex_check() {
     _exit="${2}"
   fi
   _suffix="${_string:2}"
-  _not_hex="$( \
+  _not_hex="$(
     echo \
-      "${_suffix}" | \
+      "${_suffix}" |
       grep \
         -e \
 	  "[g-z]" || \
@@ -772,7 +771,7 @@ _tx_hash_sanity_check() {
   if (( 1 < "${#}" )); then
     _exit="${2}"
   fi 
-  _tx_hash="$( \
+  _tx_hash="$(
     _lower \
       "${_tx_hash}")"
   _hex_length_check \
@@ -789,7 +788,7 @@ _address_sanity_check() {
   if (( 1 < "${#}" )); then
     _exit="${2}"
   fi
-  _address="$( \
+  _address="$(
     _lower \
       "${_address}")"
   _hex_length_check \
@@ -811,7 +810,7 @@ _contract_artifacts_explorer_retrieve() {
   )
   _msg_info \
     "${_msg[*]}"
-  _data_dir="$( \
+  _data_dir="$(
     dirname \
       "${_abi}")"
   mkdir \
