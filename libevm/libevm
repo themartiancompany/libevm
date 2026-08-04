@@ -849,8 +849,9 @@ _contract_artifacts_explorer_retrieve() {
   fi
   evm-contracts-abi-get \
     "${_evm_contracts_abi_get_opts[@]}" \
-    "${_address}"
-  if [ $? -eq 0 ]; then
+    "${_address}" || \
+  true
+  if [[ -e "${_abi_target}" ]]; then
     _msg=(
       "Obtained ABI from a censorable network explorer,"
       "setting contract ABI value to '${_abi_target}'."
@@ -958,6 +959,7 @@ _contract_artifacts_index_retrieve() {
 _contract_artifacts_retrieve() {
   local \
     _cache_dir \
+    _evm_contract_source_get_cmd \
     _explorer \
     _index
   if (( "${#}" < 1 )); then
@@ -985,7 +987,16 @@ _contract_artifacts_retrieve() {
     _explorer="y"
   fi
   if [[ "${_index}" == "" ]]; then
-    _index="y"
+    _evm_contract_source_get_cmd="$(
+      command \
+        -v \
+	"evm-contract-source-get" || \
+      true)"
+    if [[ "${_evm_contract_source_get_cmd}" != "" ]]; then
+      _index="y"
+    else
+      _index="n"
+    fi
   fi
   if [[ "${_explorer}" == "y" ]]; then
     _contract_artifacts_explorer_retrieve
