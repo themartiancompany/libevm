@@ -19,6 +19,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+_NPM ?= true
 PREFIX ?= /usr/local
 _PROJECT=libevm
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
@@ -84,9 +85,18 @@ install-scripts:
 	$(_INSTALL_FILE) \
 	  "$(_PROJECT)/$(_PROJECT)" \
 	  "$(LIB_DIR)/$(_PROJECT)"
-	$(_INSTALL_FILE) \
-	  "$(_PROJECT)/nodejs/$(_PROJECT)" \
-	  "$(LIB_DIR)/$(_PROJECT)-js"
+	if [[ $(_NPM) == "true" ]]; then \
+	  make \
+	    install-npm; \
+	elif [[ $(_NPM) == "false" ]]; then \
+	  $(_INSTALL_FILE) \
+	    "$(_PROJECT)/nodejs/$(_PROJECT)" \
+	    "$(LIB_DIR)/$(_PROJECT)-js"; \
+	else \
+	  echo \
+	    "Invalid value '$(_NPM)' for variable" \
+	    "'_NPM'."; \
+	fi
 	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/$(_PROJECT)-requirements" \
 	  "$(BIN_DIR)/$(_PROJECT)-requirements"
