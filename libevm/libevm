@@ -420,8 +420,10 @@ _contract_setup_auto_detect() {
     "version"
   )
   for _field in "${_fields[@]}"; do
-    declare \
-      "${_contract_short_name}_${_field}"
+    _set \
+      "${_contract_short_name}" \
+      "${_field}" \
+      ""
   done
   _contract_version_auto_detect \
     "${_deployments}" \
