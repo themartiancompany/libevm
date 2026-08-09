@@ -412,7 +412,17 @@ _contract_setup_auto_detect() {
     _contract_short_name="${3}" \
     _network="${4}" \
     _user="${5}" \
-    _deployments="${6}"
+    _deployments="${6}" \
+    _field \
+    _fields=()
+  _fields+=(
+    "address"
+    "version"
+  )
+  for _field in "${_fields[@]}"; do
+    declare \
+      "${_contract_short_name}_${_field}"
+  done
   _contract_version_auto_detect \
     "${_deployments}" \
     "${_contract}" \

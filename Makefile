@@ -19,7 +19,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-_NPM ?= true
+_NPM ?= "true"
 PREFIX ?= /usr/local
 _PROJECT=libevm
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
