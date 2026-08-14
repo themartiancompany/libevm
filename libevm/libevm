@@ -726,7 +726,8 @@ _hex_check() {
     _string="${1}" \
     _exit \
     _suffix \
-    _not_hex
+    _not_hex \
+    _msg=()
   _exit=1
   if (( 1 < "${#}" )); then
     _exit="${2}"
@@ -756,7 +757,8 @@ _hex_length_check() {
     _length="${2}" \
     _exit \
     _suffix \
-    _not_length
+    _not_length \
+    _msg=()
   _exit=1
   if (( 2 < "${#}" )); then
     _exit="${3}"
@@ -812,6 +814,57 @@ _address_sanity_check() {
     "${_address}" \
     "40" \
     "${_exit}"
+}
+
+_app_lookup_contract() {
+  local \
+    _contract_name="${1}" \
+    _exit_code \
+    _lib \
+    _app \
+    _contract_dir
+  _exit_code=""
+  if (( 1 < "$#" )); then
+    _exit_code="${2}"
+  fi
+  declare \
+    -A \
+    _apps
+  _lib="$(
+    _lib_get)"
+  for _contract_dir in "${_lib}/"*"/deployments/${_contract_name}"; do
+    if [[ -d "${_contract_dir}" ]]; then
+      _app="$(
+        basename \
+          "$(dirname \
+               "$(dirname \
+	            "${_contract_dir}")")")"
+      _apps["${_app}"]=1
+    fi
+  done
+  _apps_amount="${#_apps[@]}"
+  if (( "${_apps_amount}" < 1 )); then
+    _msg=(
+      "No apps found for"
+      "contract '${_contract_name}'"
+      "in '${_lib}'."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      "${_exit_code}"
+  elif (( 1 < "${_apps_amount}" )); then
+    _msg=(
+      "Found more than one app for"
+      "contract '${_contract_name}'"
+      "in '${_lib}': '${_apps[*]}'."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      "${_exit_code}"
+  else
+    echo \
+      "${!_apps[*]}"
+  fi
 }
 
 _contract_artifacts_explorer_retrieve() {
