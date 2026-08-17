@@ -816,6 +816,87 @@ _address_sanity_check() {
     "${_exit}"
 }
 
+_contract_lookup_address() {
+  local \
+    _target_app="${1}" \
+    _address="${2}" \
+    _target_network \
+    _exit_code \
+    _lib \
+    _contract_name \
+    _contract_address \
+    _config_file \
+    _evm_contract_deployment_address_opts=() \
+  _target_network=""
+  _exit_code=""
+  if (( 2 < "$#" )); then
+    _target_network="${3}"
+  fi
+
+  if (( 3 < "$#" )); then
+    _exit_code="${3}"
+  fi
+  declare \
+    -A \
+    _contracts
+  _lib="$(
+    _lib_get)"
+  for _network in "${_lib}/${_target_app}/deployments/"*"/"*; do
+    if [[ -e "${_network}" ]]; then
+      _contract_name="$(
+        basename "$(
+          dirname \
+            "${_network}")")"
+      _evm_contract_deployment_address_opts=(
+        -a
+          "${_target_app}"
+        -n
+          "${_network}"
+      )
+      _contract_address="$(
+        _evm_contract_deployment_address \
+          "${_evm_contract_deployment_address_opts[@]}" \
+          "${_contract_name}")"
+      if [[ "${_address}" == "${_contract_address}" ]]; then
+        if [[ "${_target_network}" == "" ]]; then
+          _contracts["${_contract_name}"]=1
+        else
+          if [[ "${_network}" == "${_target_network}" ]]; then
+            _contracts["${_contract_name}"]=1
+          fi
+        fi
+      fi
+    fi
+  done
+  _contracts_amount="${#_contracts[@]}"
+  if (( "${_contracts_amount}" < 1 )); then
+    _msg=(
+      "No contract found for"
+      "address '${_address}'"
+      "on network '${_network}' in '${_lib}'."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      "${_exit_code}"
+  elif (( 1 < "${_apps_amount}" )); then
+    _msg_contracts="$(
+      printf \
+        "%s\n" \
+	"${!_contracts[@]}")"
+    _msg=(
+      "Found more than one contract for"
+      "contract '${_contract_name}'"
+      "in '${_lib}':\n '${_msg_contracts}'."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      "${_exit_code}"
+  else
+    echo \
+      "${!_contracts[*]}"
+  fi
+}
+
 _app_lookup_contract() {
   local \
     _contract_name="${1}" \
@@ -1060,7 +1141,7 @@ _contract_artifacts_retrieve() {
     _evm_contract_source_get_cmd="$(
       command \
         -v \
-	"evm-contract-source-get" || \
+        "evm-contract-source-get" || \
       true)"
     if [[ "${_evm_contract_source_get_cmd}" != "" ]]; then
       _index="y"
