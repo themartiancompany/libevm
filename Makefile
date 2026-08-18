@@ -121,7 +121,8 @@ install-scripts:
 	  ln \
 	   -s \
 	   "$(PREFIX)/lib/$(_PROJECT)/nodejs/$(_PROJECT)" \
-	   "$(LIB_DIR)/$(_PROJECT)-js"; \
+	   "$(LIB_DIR)/$(_PROJECT)-js"; || \
+	   true; \
 	else \
 	  echo \
 	    "Invalid value '$(_NPM)' for variable" \
