@@ -25,7 +25,7 @@
 #    If not, see <https://www.gnu.org/licenses/>.
 
 SHELL ?= bash
-_NPM ?= "true"
+_NPM ?= true
 PREFIX ?= /usr/local
 _PROJECT=libevm
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
@@ -105,19 +105,19 @@ install-scripts:
 	   -s \
 	   "$(PREFIX)/lib/node_modules/$(_PROJECT)" \
 	   "$(LIB_DIR)/nodejs"; \
-	elif [[ $(_NPM) == "false" ]]; then \
+	elif [[ "$(_NPM)" == "false" ]]; then \
 	  $(_INSTALL_DIR) \
 	    "$(LIB_DIR)/nodejs"; \
 	  cp \
 	    -r \
 	    $$(printf \
-	         "$(_PROJECT)/nodejs/%s" \
+	         "${PWD}/$(_PROJECT)/nodejs/%s " \
 	         $$(cat \
 	              "$(_PROJECT)/nodejs/package.json" | \
 	              jq \
 	                --raw-output \
-	                '.files[]') \
-	    "$(_LIB_DIR)/nodejs"; \
+	                '.files[]')) \
+	    "$(LIB_DIR)/nodejs"; \
 	  ln \
 	   -s \
 	   "$(PREFIX)/lib/$(_PROJECT)/nodejs/$(_PROJECT)" \
