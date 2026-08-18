@@ -1,24 +1,30 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0
 
-#    ----------------------------------------------------------------------
-#    Copyright © 2025  Pellegrino Prevete
+#    -----------------------------------------------------
+#    Copyright © 2025, 2026  Pellegrino Prevete
 #
 #    All rights reserved
-#    ----------------------------------------------------------------------
+#    -----------------------------------------------------
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    This program is free software: you can redistribute
+#    it and/or modify it under the terms of the
+#    GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of
+#    the License, or (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
+#    This program is distributed in the hope that it
+#    will be useful, but WITHOUT ANY WARRANTY;
+#    without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#    See the GNU Affero General Public License for
+#    more details.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#    You should have received a copy of the
+#    GNU Affero General Public License
+#    along with this program.
+#    If not, see <https://www.gnu.org/licenses/>.
 
+SHELL ?= bash
 _NPM ?= "true"
 PREFIX ?= /usr/local
 _PROJECT=libevm
@@ -82,24 +88,48 @@ install: install-scripts install-doc install-man
 
 install-scripts:
 
+	$(_INSTALL_EXE) \
+	  "$(_PROJECT)/bash/$(_PROJECT)-requirements" \
+	  "$(BIN_DIR)/$(_PROJECT)-requirements"
 	$(_INSTALL_FILE) \
-	  "$(_PROJECT)/$(_PROJECT)" \
+	  "$(_PROJECT)/bash/$(_PROJECT)" \
 	  "$(LIB_DIR)/$(_PROJECT)"
 	if [[ $(_NPM) == "true" ]]; then \
 	  make \
 	    install-npm; \
+	  ln \
+	   -s \
+	   "$(PREFIX)/lib/node_modules/$(_PROJECT)/$(_PROJECT)" \
+	   "$(LIB_DIR)/$(_PROJECT)-js"; \
+	  ln \
+	   -s \
+	   "$(PREFIX)/lib/node_modules/$(_PROJECT)" \
+	   "$(LIB_DIR)/nodejs"; \
 	elif [[ $(_NPM) == "false" ]]; then \
-	  $(_INSTALL_FILE) \
-	    "$(_PROJECT)/nodejs/$(_PROJECT)" \
-	    "$(LIB_DIR)/$(_PROJECT)-js"; \
+	  $(_INSTALL_DIR) \
+	    "$(LIB_DIR)/nodejs"; \
+	  cp \
+	    -r \
+	    $$(printf \
+	         "$(_PROJECT)/nodejs/%s" \
+	         $$(cat \
+	              "$(_PROJECT)/nodejs/package.json" | \
+	              jq \
+	                --raw-output \
+	                '.files[]') \
+	    "$(_LIB_DIR)/nodejs"; \
+	  ln \
+	   -s \
+	   "$(PREFIX)/lib/$(_PROJECT)/nodejs/$(_PROJECT)" \
+	   "$(LIB_DIR)/$(_PROJECT)-js"; \
 	else \
 	  echo \
 	    "Invalid value '$(_NPM)' for variable" \
-	    "'_NPM'."; \
+	    "'_NPM'." \
+	  1>&2; \
+	  exit \
+	    1; \
 	fi
-	$(_INSTALL_EXE) \
-	  "$(_PROJECT)/$(_PROJECT)-requirements" \
-	  "$(BIN_DIR)/$(_PROJECT)-requirements"
 
 install-npm:
 
