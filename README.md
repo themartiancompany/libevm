@@ -73,7 +73,10 @@ the uncensorable, undeletable, distributed, network-neutral,
 decentralized Twitter (whose sources are entirely hosted on
 the EVMFS) and many others currently in development.
 
-LibEVM is a core component of the Human Instrumentality Project (HIP).
+LibEVM is a core component of the
+[Human Instrumentality Project](
+  http://www.humaninstrumentalityproject.org)
+(HIP).
 
 ## Documentation
 
@@ -81,12 +84,11 @@ You can immediately start using this library into your Bash program by
 pasting the following at its beginning:
 
 ```bash
-_bin="$( \
+_bin="$(
   dirname \
-    "$( \
-      command \
-        -v \
-	  "env")")"
+    "$(command \
+         -v \
+	     "env")")"
 _lib="${_bin}/../lib"
 source \
   "${_lib}/libevm/libevm"
@@ -98,7 +100,7 @@ import:
 ```javascript
 const
   _libevm_module =
-    require(
+    await import(
       "../libevm/libevm-js");
 ```
 
