@@ -34,6 +34,9 @@ LIB_DIR=$(DESTDIR)$(PREFIX)/lib/$(_PROJECT)
 NODE_DIR=$(DESTDIR)$(PREFIX)/lib/node_modules/$(_PROJECT)
 MAN_DIR?=$(DESTDIR)$(PREFIX)/share/man
 
+_MAKE_LINK=\
+  ln \
+    -sv
 _INSTALL_FILE=\
   install \
     -vDm644
@@ -97,12 +100,10 @@ install-scripts:
 	if [[ $(_NPM) == "true" ]]; then \
 	  make \
 	    install-npm; \
-	  ln \
-	   -s \
+	  $(_MAKE_LINK) \
 	   "$(PREFIX)/lib/node_modules/$(_PROJECT)/$(_PROJECT)" \
 	   "$(LIB_DIR)/$(_PROJECT)-js"; \
-	  ln \
-	   -s \
+	  $(_MAKE_LINK) \
 	   "$(PREFIX)/lib/node_modules/$(_PROJECT)" \
 	   "$(LIB_DIR)/nodejs"; \
 	elif [[ "$(_NPM)" == "false" ]]; then \
@@ -118,10 +119,9 @@ install-scripts:
 	                --raw-output \
 	                '.files[]')) \
 	    "$(LIB_DIR)/nodejs"; \
-	  ln \
-	   -s \
+	  $(_MAKE_LINK) \
 	   "$(PREFIX)/lib/$(_PROJECT)/nodejs/$(_PROJECT)" \
-	   "$(LIB_DIR)/$(_PROJECT)-js"; || \
+	   "$(LIB_DIR)/$(_PROJECT)-js" || \
 	   true; \
 	else \
 	  echo \
@@ -142,8 +142,7 @@ install-npm:
 	  "../.."
 	$(_INSTALL_DIR) \
 	  "$(LIB_DIR)"
-	ln \
-	  -s \
+	$(_MAKE_LINK) \
 	  "$(NODE_DIR)/$(_PROJECT)" \
 	  "$(LIB_DIR)/$(_PROJECT)-js" || \
 	  true
